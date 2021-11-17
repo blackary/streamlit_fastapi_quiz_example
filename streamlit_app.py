@@ -53,38 +53,25 @@ def generate_choices(resp):
 
 ############## streamlit app
 
+qlist = get_quizzes()
+
 ## populate selectbox with all possible quizzes as they arrive
-quiz = st.sidebar.selectbox(
-    "Choose Lesson:",
-    [x["name"] for x in get_quizzes()],
-)
+quiz_name = st.sidebar.selectbox("Choose Lesson:", [x["name"] for x in qlist])
+
+quiz_details = [x for x in qlist if x["name"] == quiz_name][0]
 
 ## app header
-f"""# Quiz: {quiz}
+f"""# Quiz: {quiz_name}
 """
 
-##TODO Does this just become a function that calls get_quizzes to find out
-##how many questions are in a quiz, then creates a loop to generate all these?
-q0 = get_question(quiz, 0)
-q0_ans = generate_choices(q0)
-"---"
+answers = {}
 
-q1 = get_question(quiz, 1)
-q1_ans = generate_choices(q1)
-"---"
+with st.form("quiz"):
+    for idx in range(quiz_details["questions"]):
+        q = get_question(quiz_name, idx)
+        ans = generate_choices(q)
+        "---"
+        answers[idx] = ans
+    submitted = st.form_submit_button("Submit")
 
-q2 = get_question(quiz, 2)
-q2_ans = generate_choices(q2)
-"---"
-
-q3 = get_question(quiz, 3)
-q2_ans = generate_choices(q3)
-"---"
-
-q4 = get_question(quiz, 4)
-q4_ans = generate_choices(q4)
-"---"
-
-q5 = get_question(quiz, 5)
-q5_ans = generate_choices(q5)
-"---"
+answers

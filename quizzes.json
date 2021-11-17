@@ -63,5 +63,27 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "science_bowl2",
+        "source": "http://www.csun.edu/science/ref/games/questions/97_phys.pdf",
+        "questions": [
+            {
+                "question": "Two forces have magnitudes of 11 newtons and 5 newtons. The magnitude of their sum could be equal to which of the following values? (Select all that apply)",
+                "type": "multiple_select",
+                "answers": {
+                    "a": "16 newtons",
+                    "b": "5 newtons",
+                    "c": "9 newtons",
+                    "d": "7 newtons",
+                    "e": "2 newtons"
+                },
+                "answer": [
+                    "a",
+                    "c",
+                    "d"
+                ]
+            }
+        ]
     }
 ]
