@@ -1,6 +1,6 @@
 import json
 from random import randint
-from typing import Literal
+from typing import Literal, Union
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -112,18 +112,29 @@ async def get_question(quiz: str, question_id: int = None) -> Question:
 
 
 @app.put("/answer/{quiz}/{question_id}/")
-async def post_answer(quiz: str, question_id: int, answer: str) -> Correctness:
+async def post_answer(
+    quiz: str, question_id: int, answer: Union[str, list[str]]
+) -> Correctness:
     contents = get_quiz(quiz)
     question = get_question_details(contents, question_id)
 
-    answer = answer.lower().strip()
+    requires_list = type(question["answer"]) == list
+    is_list = type(answer) == list
 
-    print(question)
-    print(answer)
+    if requires_list != is_list:
+        raise HTTPException(status_code=400, detail="Invalid answer type")
+
+    if is_list:
+        if set([a.lower() for a in answer]) == set(
+            [a.lower() for a in question["answer"]]
+        ):
+            return "Correct"
+        return "Incorrect"
+
+    answer = answer.lower().strip()
 
     if question["answer"].lower() == answer:
         return "Correct"
-
     elif answer in question.get("alternative_answers", []):
         return "Correct"
 
