@@ -1,8 +1,22 @@
-from fastapi import FastAPI, HTTPException
-from random import randint
 import json
+from random import randint
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 app = FastAPI()
+
+
+class QuestionDetails(BaseModel):
+    question_text: str
+    question_id: int
+    question_answers: dict[str, str]
+    question_type: str
+
+
+class Question(BaseModel):
+    quiz_name: str
+    question_info: QuestionDetails
 
 
 def get_quiz_contents(quiz_name: str) -> dict:
@@ -19,7 +33,7 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/question/{quiz}")
+@app.get("/question/{quiz}", response_model=Question)
 async def get_question(quiz: str, question_id: int = None):
     try:
         contents = get_quiz_contents(quiz)
@@ -36,7 +50,7 @@ async def get_question(quiz: str, question_id: int = None):
     question_info = {
         "question_text": question["question"],
         "question_id": question_id,
-        "question_answers": question.get("answers", []),
+        "question_answers": question.get("answers", {}),
         "question_type": question["type"],
     }
     return {"quiz_name": contents["name"], "question_info": question_info}
