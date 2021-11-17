@@ -1,5 +1,5 @@
-import streamlit as st
 import requests
+import streamlit as st
 
 BASE_URL = "http://127.0.0.1:8000"
 
@@ -26,6 +26,10 @@ def get_question(lesson, question_id):
 
 
 def submit_answers(quiz: str, answers: list) -> dict:
+    """
+    Submit all of the questions from a given quiz (with name `quiz`) to the appropriate endpoint, and
+    return the response json
+    """
     url = f"{BASE_URL}/answer/{quiz}"
     r = requests.put(url, json=answers)
     return r.json()
