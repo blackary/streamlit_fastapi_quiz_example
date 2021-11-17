@@ -26,7 +26,17 @@ class Quiz(BaseModel):
     question_types: list[str]
 
 
+class Answer(BaseModel):
+    question_id: int
+    answer: Union[str, list[str]]
+
+
 Correctness = Literal["Correct", "Incorrect"]
+
+
+class AnswerCorrectness(BaseModel):
+    question_id: int
+    correct: Correctness
 
 
 def get_all_quiz_contents() -> list[dict]:
@@ -111,12 +121,34 @@ async def get_question(quiz: str, question_id: int = None) -> Question:
     return {"quiz_name": contents["name"], "question_info": question_info}
 
 
+@app.put("/answer/{quiz}/", response_model=list[AnswerCorrectness])
+async def post_answers(quiz: str, answers: list[Answer]):
+    contents = get_quiz(quiz)
+    resp: list[AnswerCorrectness] = []
+    for answer in answers:
+        correctness = get_correctness(contents, answer.question_id, answer.answer)
+        resp.append(
+            {
+                "question_id": answer.question_id,
+                "correct": correctness,
+            }
+        )
+    return resp
+
+
 @app.put("/answer/{quiz}/{question_id}/")
 async def post_answer(
     quiz: str, question_id: int, answer: Union[str, list[str]]
 ) -> Correctness:
     contents = get_quiz(quiz)
-    question = get_question_details(contents, question_id)
+    return get_correctness(contents, question_id, answer)
+
+
+def get_correctness(
+    quiz_contents: dict, question_id: int, answer: Union[str, list[str]]
+) -> Correctness:
+    question = get_question_details(quiz_contents, question_id)
+    print(question)
 
     requires_list = type(question["answer"]) == list
     is_list = type(answer) == list

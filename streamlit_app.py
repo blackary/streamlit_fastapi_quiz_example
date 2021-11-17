@@ -25,6 +25,12 @@ def get_question(lesson, question_id):
     return r["question_info"]
 
 
+def submit_answers(quiz: str, answers: list) -> dict:
+    url = f"{BASE_URL}/answer/{quiz}"
+    r = requests.put(url, json=answers)
+    return r.json()
+
+
 def display_question(resp):
     """Format the question nicely, given the API response"""
     return f"""Question {resp["question_id"]}: {resp["question_text"]}"""
@@ -64,14 +70,23 @@ quiz_details = [x for x in qlist if x["name"] == quiz_name][0]
 f"""# Quiz: {quiz_name}
 """
 
-answers = {}
+answers = []
+
+total_questions = quiz_details["questions"]
 
 with st.form("quiz"):
-    for idx in range(quiz_details["questions"]):
+    for idx in range(total_questions):
         q = get_question(quiz_name, idx)
         ans = generate_choices(q)
         "---"
-        answers[idx] = ans
+        answers.append(
+            {
+                "question_id": idx,
+                "answer": ans,
+            }
+        )
     submitted = st.form_submit_button("Submit")
-
-answers
+    if submitted:
+        correctness = submit_answers(quiz_name, answers)
+        correct_answers = len([a for a in correctness if a["correct"] == "Correct"])
+        st.write(f"## {correct_answers / total_questions * 100:.2f}% correct")
