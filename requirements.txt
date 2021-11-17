@@ -2,3 +2,4 @@ streamlit
 fastapi
 pydantic
 uvicorn[standard]
+requests
