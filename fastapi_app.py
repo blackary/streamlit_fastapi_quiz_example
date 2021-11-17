@@ -20,21 +20,53 @@ class Question(BaseModel):
     question_info: QuestionDetails
 
 
+class Quiz(BaseModel):
+    name: str
+    questions: int
+    question_types: list[str]
+
+
 Correctness = Literal["Correct", "Incorrect"]
 
 
-def get_quiz_contents(quiz_name: str) -> dict:
+def get_all_quiz_contents() -> list[dict]:
     with open("quizzes.json") as f:
-        quizzes = json.load(f)
-        for quiz in quizzes:
-            if quiz["name"] == quiz_name:
-                return quiz
-        raise KeyError(f"Quiz {quiz_name} not found")
+        return json.load(f)
+
+
+def get_quiz_contents(quiz_name: str) -> dict:
+    quizzes = get_all_quiz_contents()
+    for quiz in quizzes:
+        if quiz["name"] == quiz_name:
+            return quiz
+    raise KeyError(f"Quiz {quiz_name} not found")
 
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+
+@app.get("/quizzes")
+def get_quizzes() -> list[Quiz]:
+    quizzes = get_all_quiz_contents()
+
+    details: list[Quiz] = []
+
+    for quiz_details in quizzes:
+        questions = quiz_details["questions"]
+        question_types = list(set(question["type"] for question in questions))
+        details.append(
+            Quiz(
+                **{
+                    "name": quiz_details["name"],
+                    "questions": len(questions),
+                    "question_types": question_types,
+                }
+            )
+        )
+
+    return details
 
 
 def get_quiz(quiz_name: str) -> dict:
@@ -61,10 +93,19 @@ async def get_question(quiz: str, question_id: int = None) -> Question:
     if question_id is None:
         question_id = randint(0, len(contents["questions"]) - 1)
     question = get_question_details(contents, question_id)
+    if "answers" in question:
+        question_answers = question["answers"]
+    elif question["type"] == "true_false":
+        question_answers = {
+            "True": "True",
+            "False": "False",
+        }
+    else:
+        question_answers = {}
     question_info = {
         "question_text": question["question"],
         "question_id": question_id,
-        "question_answers": question.get("answers", {}),
+        "question_answers": question_answers,
         "question_type": question["type"],
     }
     return {"quiz_name": contents["name"], "question_info": question_info}

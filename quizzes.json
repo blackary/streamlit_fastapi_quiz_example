@@ -41,6 +41,11 @@
                     "1.8 m",
                     "1.8"
                 ]
+            },
+            {
+                "question": "For small oscillations, the period of a pendulum doubles if the mass of the pendulum bob is doubled: True or False?",
+                "type": "true_false",
+                "answer": "False"
             }
         ]
     }
