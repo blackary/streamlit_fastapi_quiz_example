@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-BASE_URL = "https://cbdf-69-174-156-186.ngrok.io"
+BASE_URL = "http://127.0.0.1:8000"
 
 
 ############## utilities

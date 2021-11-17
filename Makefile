@@ -14,9 +14,11 @@ build: ## Build the container
 	docker build -t quiz-img .
  
 run: ## Run the container
-	docker run -d --name quiz -p 80:80 quiz-img
+	docker run -d --name quiz -p 8000:8000 quiz-img
 
 up: build run ## Build and run container
 
 stop: ## Stop and remove a running container
 	docker stop quiz; docker rm quiz
+
+rebuild: stop up ## Stop and restart container
