@@ -1,0 +1,15 @@
+{
+    "name": "multiplication2",
+    "pretty_name": "Multiplication!",
+    "questions": [
+        {
+            "question": "2 * 2",
+            "type": "text",
+            "answer": "4",
+            "answers": {},
+            "alternative_answers": [
+                "4.0"
+            ]
+        }
+    ]
+}

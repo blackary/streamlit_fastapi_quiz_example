@@ -1,7 +1,12 @@
-import streamlit as st
-from string import ascii_letters, ascii_lowercase
-from typing import Literal, Optional, Union
+import json
 from dataclasses import dataclass, field
+from pathlib import Path
+from string import ascii_letters, ascii_lowercase
+from typing import Literal, Union
+
+import streamlit as st
+
+BASE_URL = "http://127.0.0.1:8000"
 
 
 @dataclass()
@@ -19,10 +24,10 @@ class Quiz:
     pretty_name: str
     questions: list[Question]
 
-    def to_json(self) -> dict:
+    def to_json(self) -> str:
         base_dict = self.__dict__.copy()
         base_dict["questions"] = [q.__dict__ for q in base_dict["questions"]]
-        return base_dict
+        return json.dumps(base_dict, indent=4)
 
 
 "# Create new quiz!"
@@ -94,11 +99,11 @@ if question_text and answer and st.button("Save question"):
         )
     )
 
-
-# st.write(st.session_state)
-
-# current_quiz.__dict__
-
 current_quiz = st.session_state["quizzes"][quiz_key]
-st.write(f"Paste the following into `quizzes/{quiz_key}.json`")
-st.write(current_quiz.to_json())
+save_path = (Path("quizzes") / quiz_key).with_suffix(".json")
+
+st.text(current_quiz.to_json())
+
+if st.button(f"Save quiz to {save_path}?"):
+    save_path.write_text(current_quiz.to_json())
+    st.write(current_quiz.to_json())
