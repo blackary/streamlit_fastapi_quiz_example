@@ -92,13 +92,18 @@ with st.form("quiz"):
         ans = generate_choices(q)
         "---"
         answers.append(
-            {"question_id": idx, "answer": ans,}
+            {
+                "question_id": idx,
+                "answer": ans,
+            }
         )
     submitted = st.form_submit_button("Submit")
     if submitted:
         correctness = submit_answers(quiz_name, answers)
         correct_answers = len([a for a in correctness if a["correct"] == "Correct"])
         st.write(f"## {correct_answers / total_questions * 100:.2f}% correct")
+        if correct_answers == total_questions:
+            st.balloons()
 
         ## write results to google sheets
         gc = gspread.service_account_from_dict(st.secrets["gcp_service_account"])
