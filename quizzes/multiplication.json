@@ -1,1 +1,17 @@
-{"name": "multiplication", "pretty_name": "Multiplication!", "questions": [{"question": "6 * ? == 24", "type": "multiple_choice", "answer": "c", "answers": {"a": "2", "b": "3", "c": "4"}, "alternative_answers": []}]}
+{
+    "name": "multiplication",
+    "pretty_name": "Multiplication!",
+    "questions": [
+        {
+            "question": "6 * ? == 24",
+            "type": "multiple_choice",
+            "answer": "c",
+            "answers": {
+                "a": "2",
+                "b": "3",
+                "c": "4"
+            },
+            "alternative_answers": []
+        }
+    ]
+}

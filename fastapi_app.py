@@ -9,6 +9,14 @@ from pydantic import BaseModel
 app = FastAPI()
 
 
+class QuestionAdminDetails(BaseModel):
+    question_text: str
+    question_id: int
+    question_answers: dict[str, str]
+    question_type: str
+    question_answer: Union[str, list[str]]
+
+
 class QuestionDetails(BaseModel):
     question_text: str
     question_id: int
@@ -21,8 +29,14 @@ class Question(BaseModel):
     question_info: QuestionDetails
 
 
+class QuestionAdmin(BaseModel):
+    quiz_name: str
+    question_info: QuestionAdminDetails
+
+
 class Quiz(BaseModel):
     name: str
+    pretty_name: str
     questions: int
     question_types: list[str]
 
@@ -71,12 +85,10 @@ def get_quizzes() -> list[Quiz]:
         question_types = list(set(question["type"] for question in questions))
         details.append(
             Quiz(
-                **{
-                    "name": quiz_details["name"],
-                    "pretty_name": quiz_details.get("pretty_name", "name"),
-                    "questions": len(questions),
-                    "question_types": question_types,
-                }
+                name=quiz_details["name"],
+                pretty_name=quiz_details.get("pretty_name", "name"),
+                questions=len(questions),
+                question_types=question_types,
             )
         )
 
@@ -121,6 +133,31 @@ async def get_question(quiz: str, question_id: int = None) -> Question:
         "question_id": question_id,
         "question_answers": question_answers,
         "question_type": question["type"],
+    }
+    return {"quiz_name": contents["name"], "question_info": question_info}
+
+
+@app.get("/question_admin/{quiz}", response_model=QuestionAdmin)
+async def get_question_admin(quiz: str, question_id: int = None) -> Question:
+    contents = get_quiz(quiz)
+    if question_id is None:
+        question_id = randint(0, len(contents["questions"]) - 1)
+    question = get_question_details(contents, question_id)
+    if "answers" in question:
+        question_answers = question["answers"]
+    elif question["type"] == "true_false":
+        question_answers = {
+            "True": "True",
+            "False": "False",
+        }
+    else:
+        question_answers = {}
+    question_info = {
+        "question_text": question["question"],
+        "question_id": question_id,
+        "question_answers": question_answers,
+        "question_type": question["type"],
+        "question_answer": question["answer"],
     }
     return {"quiz_name": contents["name"], "question_info": question_info}
 
