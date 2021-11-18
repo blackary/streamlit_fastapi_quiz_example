@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 from random import randint
 from typing import Literal, Union
 
@@ -40,16 +41,18 @@ class AnswerCorrectness(BaseModel):
 
 
 def get_all_quiz_contents() -> list[dict]:
-    with open("quizzes.json") as f:
-        return json.load(f)
+    quizzes = []
+    for quiz in Path("quizzes/").glob("*.json"):
+        quizzes.append(json.loads(quiz.read_text()))
+    return quizzes
 
 
 def get_quiz_contents(quiz_name: str) -> dict:
-    quizzes = get_all_quiz_contents()
-    for quiz in quizzes:
-        if quiz["name"] == quiz_name:
-            return quiz
-    raise KeyError(f"Quiz {quiz_name} not found")
+    path = (Path("quizzes") / quiz_name).with_suffix(".json")
+    if not path.exists():
+        raise KeyError(f"Quiz {quiz_name} not found")
+
+    return json.loads(path.read_text())
 
 
 @app.get("/")
