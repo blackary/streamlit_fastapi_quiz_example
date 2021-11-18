@@ -71,6 +71,10 @@ qlist = get_quizzes()
 
 ## placeholder for a real authentication mechanism
 username = st.sidebar.text_input("Enter your user name")
+
+if not username:
+    st.stop()
+
 st.sidebar.write("---")
 
 ## populate selectbox with all possible quizzes as they arrive
@@ -79,7 +83,7 @@ quiz_name = st.sidebar.selectbox("Choose Quiz:", [x["name"] for x in qlist])
 quiz_details = [x for x in qlist if x["name"] == quiz_name][0]
 
 ## app header
-f"""# Quiz: {quiz_name}
+f"""# Quiz: {quiz_details["pretty_name"]}
 """
 
 answers = []

@@ -106,4 +106,5 @@ st.text(current_quiz.to_json())
 
 if st.button(f"Save quiz to {save_path}?"):
     save_path.write_text(current_quiz.to_json())
-    st.write(current_quiz.to_json())
+    "## Saved!"
+    st.balloons()

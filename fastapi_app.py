@@ -23,6 +23,7 @@ class Question(BaseModel):
 
 class Quiz(BaseModel):
     name: str
+    pretty_name: str
     questions: int
     question_types: list[str]
 
