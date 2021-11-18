@@ -1,5 +1,9 @@
 import requests
 import streamlit as st
+import pandas as pd
+import gspread
+import datetime
+
 
 BASE_URL = "http://127.0.0.1:8000"
 
@@ -65,8 +69,12 @@ def generate_choices(resp):
 
 qlist = get_quizzes()
 
+## placeholder for a real authentication mechanism
+username = st.sidebar.text_input("Enter your user name")
+st.sidebar.write("---")
+
 ## populate selectbox with all possible quizzes as they arrive
-quiz_name = st.sidebar.selectbox("Choose Lesson:", [x["name"] for x in qlist])
+quiz_name = st.sidebar.selectbox("Choose Quiz:", [x["name"] for x in qlist])
 
 quiz_details = [x for x in qlist if x["name"] == quiz_name][0]
 
@@ -84,13 +92,24 @@ with st.form("quiz"):
         ans = generate_choices(q)
         "---"
         answers.append(
-            {
-                "question_id": idx,
-                "answer": ans,
-            }
+            {"question_id": idx, "answer": ans,}
         )
     submitted = st.form_submit_button("Submit")
     if submitted:
         correctness = submit_answers(quiz_name, answers)
         correct_answers = len([a for a in correctness if a["correct"] == "Correct"])
         st.write(f"## {correct_answers / total_questions * 100:.2f}% correct")
+
+        ## write results to google sheets
+        gc = gspread.service_account_from_dict(st.secrets["gcp_service_account"])
+        sheet_url = st.secrets["private_gsheets_url"]
+        wks = gc.open_by_url(sheet_url).sheet1
+        wks.append_row(
+            [
+                username,
+                quiz_name,
+                correct_answers,
+                total_questions,
+                str(datetime.datetime.now()),
+            ]
+        )
