@@ -1,0 +1,50 @@
+{
+    "name": "multiplication",
+    "pretty_name": "Multiplication!",
+    "questions": [
+        {
+            "question": "1 * 2",
+            "type": "text",
+            "answer": "2",
+            "answers": {},
+            "alternative_answers": [
+                "2.0"
+            ]
+        },
+        {
+            "question": "4 * 4 == 24?",
+            "type": "true_false",
+            "answer": "False",
+            "answers": {
+                "True": "True",
+                "False": "False"
+            },
+            "alternative_answers": []
+        },
+        {
+            "question": "6 * ? > 15",
+            "type": "multiple_select",
+            "answer": [
+                "b",
+                "c"
+            ],
+            "answers": {
+                "a": "2",
+                "b": "3",
+                "c": "4"
+            },
+            "alternative_answers": []
+        },
+        {
+            "question": "6 * ? == 24",
+            "type": "multiple_choice",
+            "answer": "c",
+            "answers": {
+                "a": "2",
+                "b": "3",
+                "c": "4"
+            },
+            "alternative_answers": []
+        }
+    ]
+}

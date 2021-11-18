@@ -1,0 +1,42 @@
+{
+    "name": "math_1",
+    "pretty_name": "math_1",
+    "questions": [
+        {
+            "question": "6 + 2",
+            "type": "text",
+            "answer": "8",
+            "answers": {},
+            "alternative_answers": [
+                "8.0",
+                "8/1"
+            ]
+        },
+        {
+            "question": "6 > 2?",
+            "type": "true_false",
+            "answer": "True",
+            "answers": {
+                "True": "True",
+                "False": "False"
+            },
+            "alternative_answers": []
+        },
+        {
+            "question": "Select primes",
+            "type": "multiple_select",
+            "answer": [
+                "a",
+                "b",
+                "d"
+            ],
+            "answers": {
+                "a": "2",
+                "b": "3",
+                "c": "4",
+                "d": "5"
+            },
+            "alternative_answers": []
+        }
+    ]
+}

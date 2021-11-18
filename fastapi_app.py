@@ -73,6 +73,7 @@ def get_quizzes() -> list[Quiz]:
             Quiz(
                 **{
                     "name": quiz_details["name"],
+                    "pretty_name": quiz_details.get("pretty_name", "name"),
                     "questions": len(questions),
                     "question_types": question_types,
                 }

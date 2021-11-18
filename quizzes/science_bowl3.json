@@ -1,0 +1,23 @@
+{
+    "name": "science_bowl3",
+    "pretty_name": "Science!",
+    "questions": [
+        {
+            "question": "For the hydrogen atom, which series describes electron transitions to the N=1 orbit, the lowest energy electron orbit? Is it the:",
+            "type": "true_false",
+            "answer": "False",
+            "answers": {
+                "True": "True",
+                "False": "False"
+            },
+            "alternative_answers": []
+        },
+        {
+            "question": "In the SI system unit of measure, what is the unit of capacitance?",
+            "type": "text",
+            "answer": "Farad",
+            "answers": {},
+            "alternative_answers": []
+        }
+    ]
+}
